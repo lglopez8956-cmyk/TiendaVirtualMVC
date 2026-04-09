@@ -31,26 +31,25 @@ namespace TiendaVirtualMVC.Controllers
         [HttpPost]
         public IActionResult Create(Usuario usuario)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(usuario); // vuelve al formulario con errores
+            }
+
             _context.Usuarios.Add(usuario);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
-        //Formulario editar
-        public IActionResult Edit(int id)
-        {
-            var usuario = _context.Usuarios.Find(id);
-            ViewBag.Usuarios = _context.Usuarios.ToList();
-
-
-            return View(usuario);
-        }
-
-        //Actualizar producto
         [HttpPost]
         public IActionResult Edit(Usuario usuario)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(usuario);
+            }
+
             _context.Usuarios.Update(usuario);
             _context.SaveChanges();
 
