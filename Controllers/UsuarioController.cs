@@ -17,8 +17,11 @@ namespace TiendaVirtualMVC.Controllers
         public IActionResult Index()
         {
             var usuarios = _context.Usuarios.ToList();
+
             return View(usuarios);
         }
+
+        //Guardar usuario
 
         public IActionResult Create()
         {
@@ -28,53 +31,43 @@ namespace TiendaVirtualMVC.Controllers
         [HttpPost]
         public IActionResult Create(Usuario usuario)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(usuario);
-            }
-
             _context.Usuarios.Add(usuario);
             _context.SaveChanges();
 
-            
             return RedirectToAction("Index");
         }
 
+        //Formulario editar
         public IActionResult Edit(int id)
         {
             var usuario = _context.Usuarios.Find(id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
+            ViewBag.Usuarios = _context.Usuarios.ToList();
+
+
             return View(usuario);
         }
 
+        //Actualizar producto
         [HttpPost]
         public IActionResult Edit(Usuario usuario)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(usuario);
-            }
-
             _context.Usuarios.Update(usuario);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
+        //Eliminar usuario
         public IActionResult Delete(int id)
         {
             var usuario = _context.Usuarios.Find(id);
 
-            if (usuario != null)
-            {
-                _context.Usuarios.Remove(usuario);
-                _context.SaveChanges();
-            }
+            _context.Usuarios.Remove(usuario);
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
+
+
     }
 }

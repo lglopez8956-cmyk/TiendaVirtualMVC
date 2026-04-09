@@ -27,6 +27,7 @@ namespace TiendaVirtualMVC.Controllers
 
         public IActionResult Create()
         {
+            ViewBag.Categorias = _context.Categorias.ToList();
             return View();
         }
 
