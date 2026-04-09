@@ -12,5 +12,6 @@ namespace TiendaVirtualMVC.Models
         public string Correo { get; set; }
 
         public string Rol { get; set; }
+        public string Celular { get; set; } 
     }
 }

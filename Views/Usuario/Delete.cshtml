@@ -1,0 +1,9 @@
+﻿@model TiendaVirtualMVC.Models.Usuario
+
+<h2>Eliminar Usuario</h2>
+
+<p>¿Seguro que deseas eliminar @Model.Nombre?</p>
+
+<form method="post" action="/Usuario/DeleteConfirmed/@Model.Id">
+    <button type="submit">Eliminar</button>
+</form>
