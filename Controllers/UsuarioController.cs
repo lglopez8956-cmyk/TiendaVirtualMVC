@@ -16,6 +16,10 @@ namespace TiendaVirtualMVC.Controllers
 
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             var usuarios = _context.Usuarios.ToList();
 
             return View(usuarios);
@@ -25,12 +29,20 @@ namespace TiendaVirtualMVC.Controllers
 
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             return View();
         }
 
         [HttpPost]
         public IActionResult Create(Usuario usuario)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             if (!ModelState.IsValid)
             {
                 return View(usuario); // vuelve al formulario con errores
@@ -45,6 +57,10 @@ namespace TiendaVirtualMVC.Controllers
         [HttpPost]
         public IActionResult Edit(Usuario usuario)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             if (!ModelState.IsValid)
             {
                 return View(usuario);
@@ -59,6 +75,10 @@ namespace TiendaVirtualMVC.Controllers
         //Eliminar usuario
         public IActionResult Delete(int id)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             var usuario = _context.Usuarios.Find(id);
 
             _context.Usuarios.Remove(usuario);

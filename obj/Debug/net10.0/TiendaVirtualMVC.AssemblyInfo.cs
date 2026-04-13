@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TiendaVirtualMVC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+37f6803e4eb3d698d323c31e4c7ceaf0c10b6876")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bcbf70dff59acbb896acceca5cee697aa1e66a26")]
 [assembly: System.Reflection.AssemblyProductAttribute("TiendaVirtualMVC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TiendaVirtualMVC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

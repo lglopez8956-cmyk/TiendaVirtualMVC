@@ -8,6 +8,11 @@ namespace TiendaVirtualMVC.Controllers
     {
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
             var categorias = new List<Categoria>
             {
                 new Categoria {Nombre = "Tecnología", Descripcion = "Productos tecnológicos"},

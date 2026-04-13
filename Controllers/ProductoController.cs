@@ -14,10 +14,13 @@ namespace TiendaVirtualMVC.Controllers
         {
             _context = context;
         }
-
         public IActionResult Index()
         {
-            
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
             var productos = _context.Productos
                 .Include(p => p.Categoria)
                 .ToList();
@@ -25,49 +28,70 @@ namespace TiendaVirtualMVC.Controllers
             return View(productos);
         }
 
+        //FORMULARIO
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             ViewBag.Categorias = _context.Categorias.ToList();
             return View();
         }
 
+        //GUARDAR PRODUCTO
         [HttpPost]
         public IActionResult Create(Producto producto)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             _context.Productos.Add(producto);
             _context.SaveChanges();
 
-            return RedirectToAction("Index"); 
+            return RedirectToAction("Index");
         }
 
+        //FOMULARIO DE EDICION
         public IActionResult Edit(int id)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             var producto = _context.Productos.Find(id);
             ViewBag.Categorias = _context.Categorias.ToList();
 
             return View(producto);
         }
-
+        //Actualizar Producto
         [HttpPost]
         public IActionResult Edit(Producto producto)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             _context.Productos.Update(producto);
             _context.SaveChanges();
-
-            return RedirectToAction("Index"); 
+            return RedirectToAction("Index");
         }
 
+        //Eliminar Producto
         public IActionResult Delete(int id)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
             var producto = _context.Productos.Find(id);
-
             if (producto != null)
             {
                 _context.Productos.Remove(producto);
                 _context.SaveChanges();
             }
-
-            return RedirectToAction("Index"); 
+            return RedirectToAction("Index");
         }
     }
 }
