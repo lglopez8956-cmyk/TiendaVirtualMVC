@@ -31,11 +31,12 @@
                     <td>@item.celular</td>
 
                     <td>
-                        <a class="btn btn-warning btn-sm"
-                           href="/Usuario/Edit/@item.Id">Editar</a>
+                        <a class="btn btn-warning btn-sm" href="/Usuario/Edit/@item.Id">Editar</a>
 
-                        <a class="btn btn-danger btn-sm"
-                           href="/Usuario/Delete/@item.Id">Eliminar</a>
+                        @if (Context.Session.GetString("Rol") == "admin")
+                        {
+                            <a class="btn btn-danger btn-sm" href="/Usuario/Delete/@item.Id">Eliminar</a>
+                        }
                     </td>
                 </tr>
             }

@@ -72,21 +72,32 @@ namespace TiendaVirtualMVC.Controllers
             return RedirectToAction("Index");
         }
 
-        //Eliminar usuario
+        // Acción para Eliminar Usuario
         public IActionResult Delete(int id)
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
+            // 1. Verificar si está logueado
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Usuario")))
             {
                 return RedirectToAction("Index", "Login");
             }
-            var usuario = _context.Usuarios.Find(id);
 
-            _context.Usuarios.Remove(usuario);
-            _context.SaveChanges();
+            // 2. Verificar si es Admin
+            var rol = HttpContext.Session.GetString("Rol");
+            if (rol != "admin")
+            {
+                // Si no es admin, lo mandamos de vuelta a la lista sin hacer nada
+                return RedirectToAction("Index");
+            }
+
+            // 3. Si pasó las pruebas, procedemos a borrar
+            var usuario = _context.Usuarios.Find(id);
+            if (usuario != null)
+            {
+                _context.Usuarios.Remove(usuario);
+                _context.SaveChanges();
+            }
 
             return RedirectToAction("Index");
         }
-
-
     }
 }

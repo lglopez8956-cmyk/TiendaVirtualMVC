@@ -85,6 +85,13 @@ namespace TiendaVirtualMVC.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
+            var rol = HttpContext.Session.GetString("Rol");
+
+            // SOLO ADMIN PUEDE ELIMINAR
+            if (rol != "admin")
+            {
+                return RedirectToAction("Index");
+            }
             var producto = _context.Productos.Find(id);
             if (producto != null)
             {

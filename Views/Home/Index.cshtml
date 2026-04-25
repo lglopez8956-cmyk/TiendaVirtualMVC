@@ -1,8 +1,48 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
+    var usuario = Context.Session.GetString("Usuario") ?? "Invitado";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Almacen Gabriel</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+
+    <div class="text-center p-5 bg-light rounded shadow">
+
+        <h1 class="display-4 fw-bold text-primary">🛒 Gabriel Shop</h1>
+
+        <h4 class="mt-3">Bienvenido, @usuario 👋</h4>
+
+        <p class="lead mt-3">
+            Encuentra los mejores productos al mejor precio de forma rápida y sencilla.
+        </p>
+
+        <hr class="my-4">
+
+        <!-- BOTONES ORGANIZADOS -->
+        <div class="row justify-content-center mt-4">
+
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Categoria" asp-action="Index"
+                   class="btn btn-warning w-100 btn-lg">
+                    📂 Categorías
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Producto" asp-action="Index"
+                   class="btn btn-primary w-100 btn-lg">
+                    📦 Productos
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Usuario" asp-action="Index"
+                   class="btn btn-success w-100 btn-lg">
+                    👤 Usuarios
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
