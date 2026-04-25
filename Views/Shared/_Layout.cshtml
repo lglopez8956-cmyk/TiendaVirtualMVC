@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,7 +10,6 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TiendaVirtualMVC.styles.css" asp-append-version="true" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </head>
 <body>
     <header>
@@ -29,7 +29,12 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
-                    <a class="btn btn-danger ms-auto" href="/Login/Logout">Cerrar sesión</a>
+
+                    @* MEJORA: Solo aparece si hay un usuario en sesión y el texto es blanco *@
+                    @if (Context.Session.GetString("Usuario") != null)
+                    {
+                        <a class="btn btn-danger ms-auto text-white" href="/Login/Logout">Cerrar sesión</a>
+                    }
                 </div>
             </div>
         </nav>

@@ -2,9 +2,13 @@
 
     <h2 class="mb-3">Lista de Productos</h2>
 
-    <a class="btn btn-success mb-3" href="/Producto/Create">
-        + Nuevo Producto
-    </a>
+    @* Solo el admin puede ver el botón de crear *@
+    @if (Context.Session.GetString("Rol") == "admin")
+    {
+        <a class="btn btn-success mb-3" href="/Producto/Create">
+            + Nuevo Producto
+        </a>
+    }
 
     <table class="table table-striped table-bordered">
         <thead class="table-dark">
@@ -13,7 +17,12 @@
                 <th>Precio</th>
                 <th>Stock</th>
                 <th>Categoría</th>
-                <th>Acciones</th>
+
+                @* MEJORA TALLER: Encabezado condicional *@
+                @if (Context.Session.GetString("Rol") == "admin")
+                {
+                    <th>Acciones</th>
+                }
             </tr>
         </thead>
 
@@ -26,14 +35,14 @@
                     <td>@item.Stock</td>
                     <td>@item.Categoria?.Nombre</td>
 
-                    <td>
-                        <a class="btn btn-warning btn-sm" href="/Producto/Edit/@item.Id">Editar</a>
-
-                        @if (Context.Session.GetString("Rol") == "admin")
-                        {
+                    @* MEJORA TALLER: Celda completa condicional *@
+                    @if (Context.Session.GetString("Rol") == "admin")
+                    {
+                        <td>
+                            <a class="btn btn-warning btn-sm" href="/Producto/Edit/@item.Id">Editar</a>
                             <a class="btn btn-danger btn-sm" href="/Producto/Delete/@item.Id">Eliminar</a>
-                        }
-                    </td>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
