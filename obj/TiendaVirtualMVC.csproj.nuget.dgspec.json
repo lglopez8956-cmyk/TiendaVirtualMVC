@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Personal\\source\\repos1\\TiendaVirtualMVC.csproj": {}
+    "C:\\Users\\Lab Simulacion 1\\Source\\Repos\\TiendaVirtualMVC1\\TiendaVirtualMVC.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Personal\\source\\repos1\\TiendaVirtualMVC.csproj": {
+    "C:\\Users\\Lab Simulacion 1\\Source\\Repos\\TiendaVirtualMVC1\\TiendaVirtualMVC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Personal\\source\\repos1\\TiendaVirtualMVC.csproj",
+        "projectUniqueName": "C:\\Users\\Lab Simulacion 1\\Source\\Repos\\TiendaVirtualMVC1\\TiendaVirtualMVC.csproj",
         "projectName": "TiendaVirtualMVC",
-        "projectPath": "C:\\Users\\Personal\\source\\repos1\\TiendaVirtualMVC.csproj",
-        "packagesPath": "C:\\Users\\Personal\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Personal\\source\\repos1\\obj\\",
+        "projectPath": "C:\\Users\\Lab Simulacion 1\\Source\\Repos\\TiendaVirtualMVC1\\TiendaVirtualMVC.csproj",
+        "packagesPath": "C:\\Users\\Lab Simulacion 1\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Lab Simulacion 1\\Source\\Repos\\TiendaVirtualMVC1\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Personal\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Lab Simulacion 1\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -88,7 +89,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

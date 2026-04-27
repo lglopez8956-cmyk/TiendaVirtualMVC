@@ -22,7 +22,9 @@ namespace TiendaVirtualMVC.Models
 
         [Required]
         [RegularExpression(@"^3\d{9}$",
-            ErrorMessage = "El celular debe estar entre 3000000000 y 3999999999")]
+            ErrorMessage = "El celular debe Iniciar en 3 y debe terner 10 digitos")]
         public string celular { get; set; }
+
+        public string Clave { get; set; }
     }
 }

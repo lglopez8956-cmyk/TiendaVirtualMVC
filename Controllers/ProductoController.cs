@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using TiendaVirtualMVC.Data;
 using TiendaVirtualMVC.Models;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 
 namespace TiendaVirtualMVC.Controllers
 {
@@ -37,24 +38,21 @@ namespace TiendaVirtualMVC.Controllers
             if (HttpContext.Session.GetString("Usuario") == null)
                 return RedirectToAction("Index", "Login");
 
-            // Solo el admin puede crear
             if (HttpContext.Session.GetString("Rol") != "admin")
                 return RedirectToAction("Index");
 
-            // Pasamos la lista de categorías para el Select
-            ViewBag.Categorias = _context.Categorias.ToList();
+            
+            ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre");
             return View();
         }
 
-       
         [HttpPost]
         public IActionResult Create(Producto producto)
         {
             if (HttpContext.Session.GetString("Usuario") == null)
-            {
                 return RedirectToAction("Index", "Login");
-            }
 
+            
             ModelState.Remove("Categoria");
 
             if (ModelState.IsValid)
@@ -64,11 +62,11 @@ namespace TiendaVirtualMVC.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Categorias = _context.Categorias.ToList();
+            
+            ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
             return View(producto);
         }
 
-        
         public IActionResult Edit(int id)
         {
             if (HttpContext.Session.GetString("Usuario") == null)
@@ -77,7 +75,7 @@ namespace TiendaVirtualMVC.Controllers
             var producto = _context.Productos.Find(id);
             if (producto == null) return NotFound();
 
-            // Cargamos las categorías para el desplegable
+            
             ViewBag.Categorias = _context.Categorias.ToList();
 
             return View(producto);

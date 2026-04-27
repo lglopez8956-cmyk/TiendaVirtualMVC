@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TiendaVirtualMVC.Data;
-using TiendaVirtualMVC.Models;
+﻿using Microsoft.AspNetCore.Http; // Asegúrate de tener esta línea
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using Microsoft.AspNetCore.Http; // Asegúrate de tener esta línea
+using TiendaVirtualMVC.Data;
+using TiendaVirtualMVC.Helpers;
+using TiendaVirtualMVC.Models;
 
 namespace TiendaVirtualMVC.Controllers
 {
@@ -29,6 +30,7 @@ namespace TiendaVirtualMVC.Controllers
 
         public IActionResult Create()
         {
+            
             // Verificamos sesión y que sea ADMIN (según el taller)
             if (HttpContext.Session.GetString("Usuario") == null)
             {
@@ -46,6 +48,7 @@ namespace TiendaVirtualMVC.Controllers
         [HttpPost]
         public IActionResult Create(Usuario usuario)
         {
+            usuario.Clave = HashHelper.ObtenerHash(usuario.Clave);
             if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Index", "Login");
