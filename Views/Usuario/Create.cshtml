@@ -1,47 +1,68 @@
 ﻿@model TiendaVirtualMVC.Models.Usuario
 
-<h2>Crear Usuario</h2>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="mb-4">Crear Usuario</h2>
 
-<form asp-action="Create" method="post">
+            <form asp-action="Create" method="post">
 
-    <div asp-validation-summary="All" class="text-danger"></div>
+                <!-- Resumen de validación de errores -->
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div class="mb-3">
-        <label class="form-label">Nombre</label>
-        <input asp-for="Nombre" class="form-control" />
-        <span asp-validation-for="Nombre" class="text-danger"></span>
+                <!-- Campo de Nombre -->
+                <div class="mb-3">
+                    <label asp-for="Nombre" class="form-label"></label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Ingrese su nombre completo" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <!-- Campo de Correo -->
+                <div class="mb-3">
+                    <label asp-for="Correo" class="form-label"></label>
+                    <input asp-for="Correo" class="form-control" placeholder="ejemplo@correo.com" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+
+                <!-- Campo de Celular -->
+                <div class="mb-3">
+                    <label asp-for="Celular" class="form-label"></label>
+                    <input asp-for="Celular" class="form-control" placeholder="Ej: 3001234567" />
+                    <span asp-validation-for="Celular" class="text-danger"></span>
+                </div>
+
+                <!-- Campo de Rol -->
+                <div class="mb-3">
+                    <label asp-for="Rol" class="form-label"></label>
+                    <select asp-for="Rol" class="form-select">
+                        <option value="">-- Seleccione un Rol --</option>
+                        <option value="admin">Administrador</option>
+                        <option value="user">Usuario</option>
+                    </select>
+                    <span asp-validation-for="Rol" class="text-danger"></span>
+                </div>
+
+                <!-- Campo de Clave .......-->
+                <div class="mb-3">
+                    <label asp-for="Clave" class="form-label"></label>
+                    <input asp-for="Clave" class="form-control" />
+                    <span asp-validation-for="Clave" class="text-danger"></span>
+                </div>
+               
+                <hr />
+
+                <!-- Botones de acción -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <div class="mb-3">
-        <label class="form-label">Correo</label>
-        <input asp-for="Correo" class="form-control" />
-        <span asp-validation-for="Correo" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Celular</label>
-        <input asp-for="celular" class="form-control" />
-        <span asp-validation-for="celular" class="text-danger"></span>
-    </div>
-
-    @* Seccion del Select segun la imagen *@
-    <div class="mb-3">
-        <label class="form-label">Rol</label>
-        <select asp-for="Rol" class="form-control">
-            <option value="Administrador">Administrador</option>
-            <option value="Cliente">Usuario</option>
-        </select>
-        <span asp-validation-for="Rol" class="text-danger"></span>
-    </div>
-
-    @* Seccion de Clave segun la imagen *@
-    <div class="mb-3">
-        <label class="form-label">Clave</label>
-        <input asp-for="Clave" type="password" class="form-control" />
-        <span asp-validation-for="Clave" class="text-danger"></span>
-    </div>
-
-    <hr>
-    <button type="submit" class="btn btn-success">Guardar</button>
-    <a href="/Usuario" class="btn btn-secondary">Volver</a>
-</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

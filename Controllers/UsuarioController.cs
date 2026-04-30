@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http; // Asegúrate de tener esta línea
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using TiendaVirtualMVC.Data;
@@ -16,65 +16,60 @@ namespace TiendaVirtualMVC.Controllers
             _context = context;
         }
 
+        // --- LISTAR USUARIOS (Requiere ser Admin) ---
         public IActionResult Index()
         {
+            // Solo entra si hay sesión iniciada
             if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Index", "Login");
             }
+
             var usuarios = _context.Usuarios.ToList();
             return View(usuarios);
         }
 
-        // --- CREAR USUARIO ---
+        // --- CREAR USUARIO (Acceso Público / Registro) ---
 
         public IActionResult Create()
         {
-            
-            // Verificamos sesión y que sea ADMIN (según el taller)
-            if (HttpContext.Session.GetString("Usuario") == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
-            if (HttpContext.Session.GetString("Rol") != "admin")
-            {
-                return RedirectToAction("Index");
-            }
-
+            // Se eliminaron las validaciones de sesión y de rol admin 
+            // para que cualquier visitante pueda registrarse.
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Usuario usuario)
+        public ActionResult Create(Usuario usuario)
         {
-            usuario.Clave = HashHelper.ObtenerHash(usuario.Clave);
-            if (HttpContext.Session.GetString("Usuario") == null)
+            if (ModelState.IsValid)
             {
+                usuario.Clave = HashHelper.ObtenerHash(usuario.Clave);
+                _context.Usuarios.Add(usuario);
+                _context.SaveChanges();
+
+                // Una vez creado, lo mandamos al Login para que inicie sesión
                 return RedirectToAction("Index", "Login");
             }
 
-            if (!ModelState.IsValid)
-            {
-                return View(usuario);
-            }
-
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
+            return View(usuario);
         }
 
-        // --- EDITAR USUARIO ---
+        // --- EDITAR USUARIO (Requiere ser Admin) ---
 
-        // ESTE ES EL MÉTODO QUE TE FALTABA (GET)
         public IActionResult Edit(int id)
         {
+            // Validación de seguridad
             if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Index", "Login");
             }
 
-            // Buscamos al usuario por su ID para llenar el formulario
+            // Validación de rol (opcional según tu lógica, pero recomendable)
+            if (HttpContext.Session.GetString("Rol") != "admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var usuario = _context.Usuarios.Find(id);
 
             if (usuario == null)
@@ -103,7 +98,7 @@ namespace TiendaVirtualMVC.Controllers
             return RedirectToAction("Index");
         }
 
-        // --- ELIMINAR USUARIO ---
+        // --- ELIMINAR USUARIO (Solo Admin) ---
 
         public IActionResult Delete(int id)
         {

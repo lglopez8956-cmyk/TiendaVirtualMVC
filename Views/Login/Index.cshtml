@@ -1,20 +1,37 @@
-﻿<h2>Login</h2>
+﻿<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4 text-center">
+            <h2 class="mb-4">Login</h2>
 
-<form method="post">
-    <div class="mb-3">
-        <label>Correo</label>
-        <input name="correo" class="form-control" />
+            <form method="post">
+                <div class="mb-3 text-start">
+                    <label class="form-label">Correo</label>
+                    <input name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label">Clave</label>
+                    <input name="clave" type="password" class="form-control" required />
+                </div>
+
+                <div class="d-grid gap-2">
+                    
+                    <button type="submit" class="btn btn-success">Ingresar</button>
+
+                    
+                    <a asp-controller="Usuario" asp-action="Create" class="btn btn-primary">
+                        Registrarse
+                    </a>
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger mt-3" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+            </form>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label>Clave</label>
-        <input name="clave" type="password" class="form-control" />
-    </div>
-
-    <button class="btn btn-primary">Ingresar</button>
-
-    @if (ViewBag.Error != null)
-    {
-        <div class="text-danger">@ViewBag.Error</div>
-    }
-</form>
+</div>
+<!-- Prueba de actualización 3.0 -->
