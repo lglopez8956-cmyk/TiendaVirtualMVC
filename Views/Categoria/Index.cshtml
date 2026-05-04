@@ -1,16 +1,22 @@
-﻿@model List<TiendaVirtualMVC.Models.Categoria>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@model List<TiendaVirtualMVC.Models.Categoria>
+
+@{
+    var rol = HttpContextAccessor.HttpContext.Session.GetString("Rol")?.Trim();
+    bool esAdmin = string.Equals(rol, "Admin", StringComparison.OrdinalIgnoreCase);
+}
 
 <div class="container mt-4">
     <h2 class="mb-3">Lista de Categorías</h2>
 
     <div class="mb-3">
-        @* BOTÓN VOLVER AZUL *@
-        <a class="btn btn-primary" href="/Home/Index">
-            Volver
-        </a>
+        <a class="btn btn-primary" href="/Home/Index">Volver</a>
 
-        @* Opcional: Si quieres un botón de crear categorías lo pondrías aquí *@
-        @* <a class="btn btn-success" href="/Categoria/Create">+ Nueva Categoría</a> *@
+        @if (esAdmin)
+        {
+            <a class="btn btn-success" asp-action="Create">+ Nueva Categoría</a>
+        }
     </div>
 
     <table class="table table-striped table-bordered">
@@ -18,7 +24,10 @@
             <tr>
                 <th>Nombre</th>
                 <th>Descripción</th>
-                <th>Estado</th>
+                @if (esAdmin)
+                {
+                    <th>Acciones</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -27,16 +36,15 @@
                 <tr>
                     <td>@cat.Nombre</td>
                     <td>@cat.Descripcion</td>
-                    <td>
-                        @if (string.IsNullOrEmpty(cat.Nombre))
-                        {
-                            <span class="badge bg-danger">Sin nombre</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-success">Activa</span>
-                        }
-                    </td>
+                    @if (esAdmin)
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-warning btn-sm">Editar</a>
+                            <form asp-action="Delete" asp-route-id="@cat.Id" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar?')">Eliminar</button>
+                            </form>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

@@ -30,11 +30,17 @@
                         </li>
                     </ul>
 
-                    @* MEJORA: Solo aparece si hay un usuario en sesión y el texto es blanco *@
-                    @if (Context.Session.GetString("Usuario") != null)
-                    {
-                        <a class="btn btn-danger ms-auto text-white" href="/Login/Logout">Cerrar sesión</a>
-                    }
+                    <div class="d-flex">
+                        @if (Context.Session.GetString("Usuario") != null)
+                        {
+                            <a class="btn btn-danger text-white" href="/Login/Logout">Cerrar sesión</a>
+                        }
+                        else
+                        {
+                            @* CORRECCIÓN: Se cambió asp-controller a "Usuario" y asp-action a "Create" *@
+                            <a class="btn btn-primary" asp-controller="Usuario" asp-action="Create">Registrarse</a>
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
@@ -53,7 +59,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>

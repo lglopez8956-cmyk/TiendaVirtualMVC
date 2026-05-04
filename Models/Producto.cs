@@ -21,6 +21,8 @@ namespace TiendaVirtualMVC.Models
         public int CategoriaId { get; set; }
         public Categoria Categoria { get; set; }
 
+        public string ImagenUrl { get; set; }
+
         public double CalcularValorInventario()
         {
             return Precio * Stock;

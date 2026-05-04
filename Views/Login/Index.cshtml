@@ -15,13 +15,9 @@
                 </div>
 
                 <div class="d-grid gap-2">
-                    
                     <button type="submit" class="btn btn-success">Ingresar</button>
 
-                    
-                    <a asp-controller="Usuario" asp-action="Create" class="btn btn-primary">
-                        Registrarse
-                    </a>
+                    @* Se eliminó el botón de Registrarse de aquí porque ya está en el Layout *@
                 </div>
 
                 @if (ViewBag.Error != null)
@@ -34,4 +30,3 @@
         </div>
     </div>
 </div>
-<!-- Prueba de actualización 3.0 -->

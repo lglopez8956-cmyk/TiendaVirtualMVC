@@ -8,9 +8,11 @@
                     <h4 class="mb-0">Crear Nuevo Producto</h4>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Create" method="post">
+                    <!-- Se agregó enctype para permitir el envío de archivos al servidor -->
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
+                        <!-- Nombre del Producto -->
                         <div class="mb-3">
                             <label asp-for="Nombre" class="form-label font-weight-bold"></label>
                             <input asp-for="Nombre" class="form-control" placeholder="Ej: Zapatos Gucci" />
@@ -18,6 +20,7 @@
                         </div>
 
                         <div class="row">
+                            <!-- Precio -->
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Precio" class="form-label font-weight-bold"></label>
                                 <div class="input-group">
@@ -27,6 +30,7 @@
                                 <span asp-validation-for="Precio" class="text-danger"></span>
                             </div>
 
+                            <!-- Stock -->
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Stock" class="form-label font-weight-bold"></label>
                                 <input asp-for="Stock" class="form-control" type="number" />
@@ -34,7 +38,8 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <!-- Categoría -->
+                        <div class="mb-3">
                             <label asp-for="CategoriaId" class="form-label font-weight-bold">Categoría</label>
                             <select asp-for="CategoriaId" class="form-select"
                                     asp-items="ViewBag.CategoriaId">
@@ -43,6 +48,14 @@
                             <span asp-validation-for="CategoriaId" class="text-danger"></span>
                         </div>
 
+                        <!-- Campo para Subir Imagen -->
+                        <div class="mb-4">
+                            <label for="imagenFile" class="form-label font-weight-bold">Imagen del Producto</label>
+                            <input type="file" name="imagenFile" id="imagenFile" class="form-control" accept="image/*" />
+                            <small class="text-muted">Formatos permitidos: JPG, PNG, JPEG.</small>
+                        </div>
+
+                        <!-- Botones de Acción -->
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
                             <button type="submit" class="btn btn-success px-4">
