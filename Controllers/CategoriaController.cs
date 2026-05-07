@@ -15,14 +15,16 @@ namespace TiendaVirtualMVC.Controllers
             _context = context;
         }
 
+        private bool ValidarSesion()
+        {
+            return HttpContext.Session.GetString("Usuario") != null;
+        }
+
         public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
+            if (!ValidarSesion()) return RedirectToAction("Index", "Login");
 
-            var categorias = await _context.Categorias.ToListAsync();
+            var categorias = await _context.Categorias.Include(c => c.Productos).ToListAsync();
             return View(categorias);
         }
 
@@ -40,7 +42,6 @@ namespace TiendaVirtualMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Categoria categoria)
         {
-            // Verificación de Admin (Ignorando mayúsculas)
             var rol = HttpContext.Session.GetString("Rol")?.Trim();
             if (!string.Equals(rol, "Admin", StringComparison.OrdinalIgnoreCase))
             {
@@ -50,11 +51,9 @@ namespace TiendaVirtualMVC.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(categoria);
-                await _context.SaveChangesAsync(); // ESTA LÍNEA ES VITAL
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            // Si llegas aquí, es porque ModelState.IsValid fue FALSO
             return View(categoria);
         }
 
@@ -77,18 +76,20 @@ namespace TiendaVirtualMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Categoria categoria)
         {
-            var rol = HttpContext.Session.GetString("Rol")?.Trim();
-            if (!string.Equals(rol, "Admin", StringComparison.OrdinalIgnoreCase))
-            {
-                return RedirectToAction("Index");
-            }
-
             if (id != categoria.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
-                _context.Update(categoria);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Update(categoria);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Categorias.Any(e => e.Id == categoria.Id)) return NotFound();
+                    else throw;
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(categoria);

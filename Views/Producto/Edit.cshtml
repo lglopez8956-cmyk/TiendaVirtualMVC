@@ -8,25 +8,27 @@
                     <h4 class="mb-0">Editar Producto</h4>
                 </div>
                 <div class="card-body">
-                    @* Se agrega enctype para permitir el envío de la nueva imagen *@
                     <form asp-action="Edit" method="post" enctype="multipart/form-data">
-
-                        @* ID OCULTO: Obligatorio para que EF sepa qué editar *@
+                        @* Resumen de errores para depuración *@
+                        <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+                        
                         <input type="hidden" asp-for="Id" />
-                        @* Mantenemos la URL de la imagen actual si no se sube una nueva *@
                         <input type="hidden" asp-for="ImagenUrl" />
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label asp-for="Nombre" class="form-label font-weight-bold"></label>
-                                    <input asp-for="Nombre" class="form-control" />
+                                    <input asp-for="Nombre" class="form-control" placeholder="Ej. Zapatos Gucci" />
                                     <span asp-validation-for="Nombre" class="text-danger"></span>
                                 </div>
 
                                 <div class="mb-3">
                                     <label asp-for="Precio" class="form-label font-weight-bold"></label>
-                                    <input asp-for="Precio" class="form-control" type="number" step="0.01" />
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="Precio" class="form-control" type="number" step="any" />
+                                    </div>
                                     <span asp-validation-for="Precio" class="text-danger"></span>
                                 </div>
 
@@ -38,8 +40,7 @@
 
                                 <div class="mb-3">
                                     <label class="form-label font-weight-bold">Categoría</label>
-                                    <select asp-for="CategoriaId" class="form-select"
-                                            asp-items="@(new SelectList(ViewBag.Categorias, "Id", "Nombre"))">
+                                    <select asp-for="CategoriaId" class="form-select" asp-items="ViewBag.CategoriaId">
                                         <option value="">-- Seleccione una Categoría --</option>
                                     </select>
                                     <span asp-validation-for="CategoriaId" class="text-danger"></span>
@@ -47,23 +48,16 @@
                             </div>
 
                             <div class="col-md-6 border-start">
-                                @* SECCIÓN DE IMAGEN SEGÚN image_3b4cab.jpg *@
                                 <div class="mb-3 text-center">
-                                    <label class="form-label font-weight-bold text-primary">Imagen actual</label><br />
-                                    @if (!string.IsNullOrEmpty(Model.ImagenUrl))
-                                    {
-                                        <img src="@Model.ImagenUrl" width="150" class="mb-2 img-thumbnail shadow-sm" />
-                                    }
-                                    else
-                                    {
-                                        <img src="/images/no-image.png" width="150" class="mb-2 img-thumbnail shadow-sm" />
-                                    }
+                                    <p class="form-label font-weight-bold text-primary">Imagen actual</p>
+                                    <img src="@(string.IsNullOrEmpty(Model.ImagenUrl) ? "/images/no-image.png" : Model.ImagenUrl)"
+                                         width="150" class="img-thumbnail shadow-sm mb-2" alt="Producto" />
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label font-weight-bold">Nueva imagen (opcional)</label>
                                     <input type="file" name="imagen" class="form-control" accept="image/*" />
-                                    <small class="text-muted">Deje en blanco para conservar la imagen actual.</small>
+                                    <small class="text-muted d-block mt-1">Deje en blanco para conservar la actual.</small>
                                 </div>
                             </div>
                         </div>
@@ -71,7 +65,7 @@
                         <hr />
                         <div class="d-flex justify-content-end gap-2">
                             <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
-                            <button type="submit" class="btn btn-warning px-4">
+                            <button type="submit" class="btn btn-warning px-4 fw-bold">
                                 <i class="fas fa-sync-alt"></i> Actualizar Producto
                             </button>
                         </div>

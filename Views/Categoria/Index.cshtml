@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
-@model List<TiendaVirtualMVC.Models.Categoria>
+@model IEnumerable<TiendaVirtualMVC.Models.Categoria>
 
 @{
     var rol = HttpContextAccessor.HttpContext.Session.GetString("Rol")?.Trim();
@@ -12,18 +12,18 @@
 
     <div class="mb-3">
         <a class="btn btn-primary" href="/Home/Index">Volver</a>
-
         @if (esAdmin)
         {
             <a class="btn btn-success" asp-action="Create">+ Nueva Categoría</a>
         }
     </div>
 
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered shadow-sm">
         <thead class="table-dark">
             <tr>
                 <th>Nombre</th>
                 <th>Descripción</th>
+                <th>Estado</th>
                 @if (esAdmin)
                 {
                     <th>Acciones</th>
@@ -36,6 +36,16 @@
                 <tr>
                     <td>@cat.Nombre</td>
                     <td>@cat.Descripcion</td>
+                    <td>
+                        @if (cat.Productos != null && cat.Productos.Any())
+                        {
+                            <span class="badge bg-success" style="font-size: 0.95rem; padding: 8px 12px;">Activa</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger" style="font-size: 0.95rem; padding: 8px 12px;">No activa</span>
+                        }
+                    </td>
                     @if (esAdmin)
                     {
                         <td>

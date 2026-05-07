@@ -20,27 +20,25 @@ namespace TiendaVirtualMVC.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            if (HttpContext.Session.GetString("Usuario") == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
+        private bool ValidarSesion() => HttpContext.Session.GetString("Usuario") != null;
+        private bool EsAdmin() => HttpContext.Session.GetString("Rol") == "admin";
 
-            var productos = _context.Productos
+        public async Task<IActionResult> Index()
+        {
+            if (!ValidarSesion()) return RedirectToAction("Index", "Login");
+
+            var productos = await _context.Productos
                 .Include(p => p.Categoria)
-                .ToList();
+                .AsNoTracking()
+                .ToListAsync();
 
             return View(productos);
         }
 
         public IActionResult Create()
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
-                return RedirectToAction("Index", "Login");
-
-            if (HttpContext.Session.GetString("Rol") != "admin")
-                return RedirectToAction("Index");
+            if (!ValidarSesion()) return RedirectToAction("Index", "Login");
+            if (!EsAdmin()) return RedirectToAction("Index");
 
             ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre");
             return View();
@@ -50,8 +48,7 @@ namespace TiendaVirtualMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Producto producto, IFormFile imagen)
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
-                return RedirectToAction("Index", "Login");
+            if (!ValidarSesion()) return RedirectToAction("Index", "Login");
 
             ModelState.Remove("Categoria");
 
@@ -59,7 +56,7 @@ namespace TiendaVirtualMVC.Controllers
             {
                 if (imagen != null && imagen.Length > 0)
                 {
-                    var nombreArchivo = Path.GetFileName(imagen.FileName);
+                    var nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
                     var ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", nombreArchivo);
 
                     using (var stream = new FileStream(ruta, FileMode.Create))
@@ -72,88 +69,99 @@ namespace TiendaVirtualMVC.Controllers
 
                 _context.Productos.Add(producto);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
             return View(producto);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
-                return RedirectToAction("Index", "Login");
+            if (!ValidarSesion()) return RedirectToAction("Index", "Login");
 
-            var producto = _context.Productos.Find(id);
+            if (id == null) return NotFound();
+
+            var producto = await _context.Productos.FindAsync(id);
             if (producto == null) return NotFound();
 
-            ViewBag.Categorias = _context.Categorias.ToList();
+            // IMPORTANTE: El nombre "CategoriaId" debe coincidir con el asp-items de la vista
+            ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
             return View(producto);
         }
 
-        // MÉTODO EDIT MODIFICADO SEGÚN image_3ba79b.png
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Producto producto, IFormFile imagen)
+        public async Task<IActionResult> Edit(int id, Producto producto, IFormFile imagen)
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
-                return RedirectToAction("Index", "Login");
+            if (!ValidarSesion()) return RedirectToAction("Index", "Login");
 
-            // Buscar el producto original en la base de datos
-            var productoBD = _context.Productos.Find(producto.Id);
-            if (productoBD == null)
+            if (id != producto.Id) return NotFound();
+
+            // QUITAMOS ESTAS DOS VALIDACIONES
+            ModelState.Remove("Categoria");
+            ModelState.Remove("imagen"); 
+
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                try
+                {
+                    var productoExistente = await _context.Productos.FindAsync(id);
+                    if (productoExistente == null) return NotFound();
+
+                    // Si el usuario subió una imagen nueva, la procesamos
+                    if (imagen != null && imagen.Length > 0)
+                    {
+                        if (!string.IsNullOrEmpty(productoExistente.ImagenUrl))
+                        {
+                            var rutaAnterior = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", productoExistente.ImagenUrl.TrimStart('/'));
+                            if (System.IO.File.Exists(rutaAnterior)) System.IO.File.Delete(rutaAnterior);
+                        }
+
+                        var nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
+                        var ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", nombreArchivo);
+
+                        using (var stream = new FileStream(ruta, FileMode.Create))
+                        {
+                            await imagen.CopyToAsync(stream);
+                        }
+
+                        productoExistente.ImagenUrl = "/images/" + nombreArchivo;
+                    }
+
+                   
+                    productoExistente.Nombre = producto.Nombre;
+                    productoExistente.Precio = producto.Precio;
+                    productoExistente.Stock = producto.Stock;
+                    productoExistente.CategoriaId = producto.CategoriaId;
+
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Productos.Any(e => e.Id == producto.Id)) return NotFound();
+                    else throw;
+                }
             }
 
-            // Actualizar datos normales
-            productoBD.Nombre = producto.Nombre;
-            productoBD.Precio = producto.Precio;
-            productoBD.Stock = producto.Stock;
-            productoBD.CategoriaId = producto.CategoriaId;
-
-            // Si sube nueva imagen
-            if (imagen != null)
-            {
-                var carpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-
-                // Verificar si la carpeta existe, si no, crearla
-                if (!Directory.Exists(carpeta))
-                {
-                    Directory.CreateDirectory(carpeta);
-                }
-
-                var ruta = Path.Combine(carpeta, imagen.FileName);
-
-                using (var stream = new FileStream(ruta, FileMode.Create))
-                {
-                    await imagen.CopyToAsync(stream);
-                }
-
-                // Actualizar la URL de la imagen en el objeto de la BD
-                productoBD.ImagenUrl = "/images/" + imagen.FileName;
-            }
-
-            // Guardar cambios en la base de datos
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            ViewBag.CategoriaId = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
+            return View(producto);
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
-                return RedirectToAction("Index", "Login");
+            if (!ValidarSesion()) return RedirectToAction("Index", "Login");
+            if (!EsAdmin()) return RedirectToAction("Index");
 
-            if (HttpContext.Session.GetString("Rol") != "admin")
-                return RedirectToAction("Index");
-
-            var producto = _context.Productos.Find(id);
+            var producto = await _context.Productos.FindAsync(id);
             if (producto != null)
             {
                 _context.Productos.Remove(producto);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }
